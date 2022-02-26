@@ -1,20 +1,23 @@
-import { StatusBar } from 'expo-status-bar';
+
+import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import Home from './src/home/home_page'
+//import Home from './src/home/_oldhome.page'
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+import DatabaseInit from './src/bancodedados/inicializacao';
+
+export default class App extends React.Component {
+
+  constructor(props) {
+    super(props);
+    new DatabaseInit
+    console.log("initialize database")
+  }
+
+
+  render() {
+    return (
+      <Home />
+    );
+  }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
