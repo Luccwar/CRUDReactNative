@@ -7,7 +7,7 @@ export default class DatabaseInit {
     constructor() {
         db = Conexao.getConnection()
         db.exec([{ sql: 'PRAGMA foreign_keys = ON;', args: [] }], false, () =>
-        console.log('Chaves Estrangeiras turned on')
+        console.log('Chaves Estrangeiras Ligadas')
     );
         this.InitDb()
     }
@@ -15,24 +15,27 @@ export default class DatabaseInit {
     private InitDb() {
         if (atualizar==1){
             var sql = [
-                `DROP TABLE IF EXISTS contato;`,
-                `create table if not exists contato (
-                id integer primary key autoincrement,
-                nome text,            
-                email text,
-                natural text            
+                `DROP TABLE IF EXISTS cliente;`,
+                `create table if not exists cliente (
+                    id integer primary key autoincrement,
+                    nome text,  
+                    sobrenome text,  
+                    email text,            
+                    senha text,
+                    telefone text            
                 );`                                  
                
             ];
         }
         else{
         var sql = [
-            //`DROP TABLE IF EXISTS contato;`,
-            `create table if not exists contato (
-            id integer primary key autoincrement,
-            nome text,            
-            email text,
-            natural text            
+            `create table if not exists cliente (
+                id integer primary key autoincrement,
+                nome text,  
+                sobrenome text,  
+                email text,            
+                senha text,
+                telefone text              
             );`                                  
            
         ];

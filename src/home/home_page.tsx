@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native'
-import ContatoServico from '../servico/contato_servico'
+import ClienteServico from '../servico/cliente_servico'
 import Icon from 'react-native-vector-icons/Ionicons'
-import { Contato } from '../modelo/contato'
+import { Cliente } from '../modelo/cliente'
 
 
 // métodos da home
@@ -11,39 +11,41 @@ export default class App extends React.Component {
 
     constructor(props) {
         super(props);
-        this.findAllContato()
+        this.findAllCliente()
     }
 
     state = {
-        contato: Contato,
-        lista_array_dados_contato: [],
+        cliente: Cliente,
+        lista_array_dados_cliente: [],
         value: null,
         Id_pesquisar: null,
         onChangeText: null,
         formularioId: null,
         formularioNome: null,
+        formularioSobrenome: null,
         formularioEmail: null,
-        formularioNatural: null
+        formularioSenha: null,
+        formularioTelefone: null
     }
 
     //acionado quando o componente e montado
     componentDidMount() {
-        this.instanciarContato();
-        this.findAllContato();
+        this.instanciarCliente();
+        this.findAllCliente();
     }
 
     //escuta atualizações na lista
     componentDidUpdate(prevProps, prevState) {
-        if (prevState.lista_array_dados_contato !== this.state.lista_array_dados_contato) {
-            this.findAllContato();
+        if (prevState.lista_array_dados_cliente !== this.state.lista_array_dados_cliente) {
+            this.findAllCliente();
         }
     }
 
-    findAllContato = () => {
-        ContatoServico.findAll()
+    findAllCliente = () => {
+        ClienteServico.findAll()
             .then((response: any) => {
                 this.setState({
-                    lista_array_dados_contato: response._array,
+                    lista_array_dados_cliente: response._array,
                     isLoading: false,
                 })
             }), (error) => {
@@ -52,23 +54,25 @@ export default class App extends React.Component {
     }
 
 
-    deleteContato = (id) => {
-        this.findContatoById(id)
+    deleteCliente = (id) => {
+        this.findClienteById(id)
         if (this.state.formularioId != null || this.state.formularioId != undefined) {
-            ContatoServico.deleteById(id)
-            Alert.alert("contato excluido com sucesso: ")
+            ClienteServico.deleteById(id)
+            Alert.alert("Cliente excluido gigatônicamente: ")
         }
     }
 
-    atualizaContato = (item0, item1, item2, item3) => {
-        let contato = new Contato()// cria objeto memória
-        contato.id = item0 // seta o atributo nome do objeto 
-        contato.nome = item1 // seta o atributo nome do objeto 
-        contato.email = item2 // seta o atributo nome do objeto 
-        contato.natural = item3 // seta o atributo nome do objeto 
+    atualizaCliente = (item0, item1, item2, item3, item4, item5) => {
+        let cliente = new Cliente()// cria objeto memória
+        cliente.id = item0 // seta o atributo id do objeto 
+        cliente.nome = item1 // seta o atributo nome do objeto 
+        cliente.sobrenome = item2 // seta o atributo sobrenome do objeto 
+        cliente.email = item3 // seta o atributo email do objeto 
+        cliente.senha = item4 // seta o atributo senha do objeto 
+        cliente.telefone = item5 // seta o atributo telefone do objeto 
         // com o valor(state) do item
 
-        ContatoServico.updateByObjeto(contato).then((response: any) => {
+        ClienteServico.updateByObjeto(cliente).then((response: any) => {
             if (response._array.length > 0 && response != null && response != undefined) {
                 // popular o objeto da memória
                 Alert.alert("Atualizado");
@@ -82,61 +86,67 @@ export default class App extends React.Component {
     }
 
 
-    insertContato = (item1, item2, item3) => {
-        let contato = new Contato()// cria objeto memória
-        contato.nome = item1 // seta o atributo nome do objeto 
-        contato.email = item2 // seta o atributo nome do objeto 
-        contato.natural = item3 // seta o atributo nome do objeto 
+    insertCliente = (item1, item2, item3, item4, item5) => {
+        let cliente = new Cliente()// cria objeto memória
+        cliente.nome = item1 // seta o atributo nome do objeto 
+        cliente.sobrenome = item2 // seta o atributo sobrenome do objeto 
+        cliente.email = item3 // seta o atributo email do objeto 
+        cliente.senha = item4 // seta o atributo senha do objeto 
+        cliente.telefone = item5 // seta o atributo telefone do objeto 
         // com o valor(state) do item
 
         // cria um id no banco para persistir o objeto
-        const insertId = ContatoServico.addData(contato);
+        const insertId = ClienteServico.addData(cliente);
         // testa pra ver se deu certo a criação do id
         if (insertId == null || insertId == undefined) {
-            Alert.alert("Não foi possivel inserir o novo contato")
+            Alert.alert("Não foi possivel inserir o novo Cliente")
         }
-        return contato
+        return cliente
     }
 
-    instanciarContato = () => {
-        let contato: Contato = new Contato()// cria objeto memória
-        return contato
+    instanciarCliente = () => {
+        let cliente: Cliente = new Cliente()// cria objeto memória
+        return cliente
     }
 
 
 
-    findContatoById = (id) => {
-        ContatoServico.findById(id)
+    findClienteById = (id) => {
+        ClienteServico.findById(id)
             .then((response: any) => {
                 if (response._array.length > 0 && response != null && response != undefined) {
                 } else {
-                    Alert.alert("id não encontrado")
+                    Alert.alert("id é um segredo gigatônico e não pode ser encontrado")
                 }
             }), (error) => {
                 console.log(error);
             }
     }
 
-    localizaContato = (id) => {
-        ContatoServico.findById(id)
+    localizaCliente = (id) => {
+        ClienteServico.findById(id)
             .then((response: any) => {
                 if (response._array.length > 0 && response != null && response != undefined) {
-                    let contatopesquisa: Contato = new Contato()// cria objeto memória
-                    const contatoretorno = response._array.map((item, key) => {
-                        contatopesquisa.id = item.id;
-                        contatopesquisa.nome = item.nome;
-                        contatopesquisa.email = item.email;
-                        contatopesquisa.natural = item.natural;
+                    let clientePesquisa: Cliente = new Cliente()// cria objeto memória
+                    const clienteRetorno = response._array.map((item, key) => {
+                        clientePesquisa.id = item.id;
+                        clientePesquisa.nome = item.nome;
+                        clientePesquisa.sobrenome = item.sobrenome;
+                        clientePesquisa.email = item.email;
+                        clientePesquisa.senha = item.senha;
+                        clientePesquisa.telefone = item.telefone;
                     })
                     // o SetState abaixo mostra para o usuário o objeto recuperado do banco
                     // e atualmente somente em memória 
 
                     this.setState({
-                        contato: contatopesquisa,
-                        formularioId: contatopesquisa.id,
-                        formularioNome: contatopesquisa.nome,
-                        formularioEmail: contatopesquisa.email,
-                        formularioNatural: contatopesquisa.natural,
+                        cliente: clientePesquisa,
+                        formularioId: clientePesquisa.id,
+                        formularioNome: clientePesquisa.nome,
+                        formularioSobrenome: clientePesquisa.sobrenome,
+                        formularioEmail: clientePesquisa.email,
+                        formularioSenha: clientePesquisa.senha,
+                        formularioTelefone: clientePesquisa.telefone,
                     })
                     // popular o objeto da memória
                     //Alert.alert("Atualizado"); 
@@ -158,15 +168,15 @@ export default class App extends React.Component {
     render() {
 
         //extrai as propriedades entre chaves
-        const { contato, lista_array_dados_contato, value, Id_pesquisar, formularioId, formularioNome, formularioEmail, formularioNatural } = this.state;
+        const { cliente, lista_array_dados_cliente, value, Id_pesquisar, formularioId, formularioNome, formularioSobrenome, formularioEmail, formularioSenha, formularioTelefone } = this.state;
         // se tivermos animais listados oriundos do banco
         // a lista é mostrada na visão
         //const {animal}=animal;
 
-        const contatoList = lista_array_dados_contato.map((item, key) => {
+        const clienteList = lista_array_dados_cliente.map((item, key) => {
             return (
                 <>
-                    <Text >id:{item.id} nome:{item.nome} email:{item.email} natural:{item.natural}</Text>
+                    <Text >id:{item.id} nome:{item.nome} sobrenome:{item.sobrenome} email:{item.email} senha:{item.senha} telefone:{item.telefone}</Text>
                 </>
             )
         })
@@ -175,10 +185,10 @@ export default class App extends React.Component {
 
             <View style={styles.container}>
 
-                <Text style={{ fontSize: 20, paddingBottom: 20 }}>Crud de Contatos</Text>
+                <Text style={{ fontSize: 20, paddingBottom: 20 }}>Crud de Clientes</Text>
 
                 <TextInput
-                    placeholder="digite o id Pesquisar"
+                    placeholder="Insira o ID a ser pesquisado..."
                     style={styles.textInput}
                     onChangeText={Id_pesquisar => { this.setState({ Id_pesquisar: Id_pesquisar }) }}
                     value={Id_pesquisar}
@@ -188,7 +198,7 @@ export default class App extends React.Component {
 
 
                 <TextInput
-                    placeholder="digite o nome do novo contato"
+                    placeholder="Digite seu nome..."
                     style={styles.textInput}
                     // a cada letra digitada (change) ajusta o state
                     onChangeText={formularioNome => { this.setState({ formularioNome: formularioNome }) }}
@@ -196,7 +206,15 @@ export default class App extends React.Component {
                 />
 
                 <TextInput
-                    placeholder="digite o email "
+                    placeholder="Digite seu sobrenome..."
+                    style={styles.textInput}
+                    // a cada letra digitada (change) ajusta o state
+                    onChangeText={formularioSobrenome => { this.setState({ formularioSobrenome: formularioSobrenome }) }}
+                    value={formularioSobrenome}
+                />
+
+                <TextInput
+                    placeholder="Digite seu email..."
                     style={styles.textInput}
                     // a cada letra digitada (change) ajusta o state
                     onChangeText={formularioEmail => { this.setState({ formularioEmail: formularioEmail }) }}
@@ -205,38 +223,46 @@ export default class App extends React.Component {
                 />
 
                 <TextInput
-                    placeholder="digite cidade Natural "
+                    placeholder="Digite sua senha..."
                     style={styles.textInput}
                     // a cada letra digitada (change) ajusta o state
-                    onChangeText={formularioNatural => { this.setState({ formularioNatural: formularioNatural }) }}
-                    value={formularioNatural}
+                    onChangeText={formularioSenha => { this.setState({ formularioSenha: formularioSenha }) }}
+                    value={formularioSenha}
+                />
+
+                <TextInput
+                    placeholder="Digite seu telefone..."
+                    style={styles.textInput}
+                    // a cada letra digitada (change) ajusta o state
+                    onChangeText={formularioTelefone => { this.setState({ formularioTelefone: formularioTelefone }) }}
+                    value={formularioTelefone}
 
                 />
 
                 <View style={styles.containerTouch}>
-                    <TouchableOpacity onPress={() => { formularioNome == null ? Alert.alert("O campo de nome não pode ser vazio") : this.insertContato(formularioNome, formularioEmail, formularioNatural) }} style={{ alignItems: "center", backgroundColor: 'green' }}>
+                    <TouchableOpacity onPress={() => { formularioNome == null ? Alert.alert("O campo de nome não pode estar vazio.") : this.insertCliente(formularioNome, formularioSobrenome, formularioEmail, formularioSenha, formularioTelefone) }} style={{ alignItems: "center", backgroundColor: 'green' }}>
                         <Icon name="md-add" size={30} color="white" />
                     </TouchableOpacity>
                 </View>
 
                 <View style={styles.containerTouch}>
-                    <TouchableOpacity onPress={() => { formularioId == null ? Alert.alert("Não tem Objeto para atualizar faça uma pesquisa") : this.atualizaContato(formularioId, formularioNome, formularioEmail, formularioNatural) }} style={{ alignItems: "center", backgroundColor: 'green' }}>
+                    <TouchableOpacity onPress={() => { formularioId == null ? Alert.alert("Não há objeto para ser atualizado, certifique-se de realizar uma pesquisa antes de tentar atualizar.") : this.atualizaCliente(formularioId, formularioNome, formularioSobrenome, formularioEmail, formularioSenha, formularioTelefone) }} style={{ alignItems: "center", backgroundColor: 'green' }}>
                         <Icon name="md-refresh" size={30} color="white" />
                     </TouchableOpacity>
                 </View>
 
                 <View style={styles.containerTouch}>
-                    <TouchableOpacity onPress={() => { Id_pesquisar == null ? Alert.alert("O campo de id não pode ser vazio") : this.localizaContato(Id_pesquisar) }} style={{ alignItems: "center", backgroundColor: 'green' }}>
+                    <TouchableOpacity onPress={() => { Id_pesquisar == null ? Alert.alert("Certifique-se de que digitou um ID para ser pesquisado.") : this.localizaCliente(Id_pesquisar) }} style={{ alignItems: "center", backgroundColor: 'green' }}>
                         <Icon name="md-search" size={30} color="white" />
                     </TouchableOpacity>
                 </View>
 
                 <View style={styles.containerTouch}>
-                    <TouchableOpacity onPress={() => { formularioId == null ? Alert.alert("O campo de id não pode ser vazio") : this.deleteContato(Id_pesquisar) }} style={{ alignItems: "center", backgroundColor: 'green' }}>
+                    <TouchableOpacity onPress={() => { formularioId == null ? Alert.alert("O campo de id não pode estar vazio.") : this.deleteCliente(Id_pesquisar) }} style={{ alignItems: "center", backgroundColor: 'green' }}>
                         <Icon name="md-remove" size={30} color="white" />
                     </TouchableOpacity>
                 </View>
-                {contatoList}
+                {clienteList}
             </View>
         );
     }

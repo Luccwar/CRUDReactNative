@@ -1,16 +1,16 @@
-import { Contato } from '../modelo/Contato'
+import { Cliente } from '../modelo/Cliente'
 import {Conexao} from '../bancodedados/conexao'
 
-const table = "contato"
+const table = "cliente"
 const db=Conexao.getConnection()
 
-export default class ContatoServico {
-     static addData(param: Contato) {
+export default class ClienteServico {
+     static addData(param: Cliente) {
         return new Promise((resolve, reject) =>db.transaction(
             tx => {
-                tx.executeSql(`insert into ${table} (nome,email,natural) 
-                values (?,?,?)`, 
-                [param.nome, param.email, param.natural], 
+                tx.executeSql(`INSERT INTO ${table} (nome,sobrenome,email,senha,telefone) 
+                VALUES (?,?,?,?,?)`, 
+                [param.nome, param.sobrenome, param.email, param.senha, param.telefone], 
                 (_, { insertId, rows }) => {
                     console.log("id insert: " + insertId);
                     resolve(insertId)
@@ -24,7 +24,7 @@ export default class ContatoServico {
      static deleteById(id: number) {
         db.transaction(
             tx => {
-                tx.executeSql(`delete from ${table} where id = ?;`, [id], (_, { rows }) => {
+                tx.executeSql(`DELETE FROM ${table} WHERE id = ?;`, [id], (_, { rows }) => {
                 }), (sqlError) => {
                     console.log(sqlError);
                 }}, (txError) => {
@@ -34,9 +34,9 @@ export default class ContatoServico {
     }
 
 
-     static updateByObjeto(param: Contato) {
+     static updateByObjeto(param: Cliente) {
         return new Promise((resolve, reject) =>db.transaction(tx => {
-                tx.executeSql(`update ${table} set nome = ? , email = ? , natural = ? where id = ?;`, [param.nome,param.email,param.natural, param.id], () => {
+                tx.executeSql(`UPDATE ${table} SET nome = ?, sobrenome = ?, email = ?, senha = ?, telefone = ? where id = ?;`, [param.nome,param.sobrenome,param.email,param.senha,param.telefone, param.id], () => {
                 }), (sqlError) => {
                     console.log(sqlError);
                 }}, (txError) => {
@@ -47,7 +47,7 @@ export default class ContatoServico {
 
      static findById(id: number) {
         return new Promise((resolve, reject) => db.transaction(tx => {
-            tx.executeSql(`select * from ${table} where id=?`, [id], (_, { rows }) => {
+            tx.executeSql(`SELECT * FROM ${table} WHERE id=?`, [id], (_, { rows }) => {
                 resolve(rows)
             }), (sqlError) => {
                 console.log(sqlError);
@@ -59,7 +59,7 @@ export default class ContatoServico {
 
       static findAll() {        
         return new Promise((resolve, reject) => db.transaction(tx => {
-            tx.executeSql(`select * from ${table}`, [], (_, { rows }) => {
+            tx.executeSql(`SELECT * FROM ${table}`, [], (_, { rows }) => {
                 resolve(rows)
             }), (sqlError) => {
                 console.log(sqlError);
